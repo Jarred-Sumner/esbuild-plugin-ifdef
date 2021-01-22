@@ -14,11 +14,19 @@ function configureStringsToSearch(vars) {
   for (let _key in vars) {
     const key = _key.replace("process.env.", "");
 
-    const keytype = typeof vars[_key];
+    let keytype = typeof vars[_key];
+    let isDefined =
+      (keytype === "boolean" && vars[_key]) || keytype !== "undefined";
 
-    if (keytype === "boolean" && vars[_key]) {
-      IF_DEFS.push(key);
-    } else if (keytype !== "boolean" && keytype !== "undefined") {
+    if (
+      keytype === "string" &&
+      isDefined &&
+      (vars[_key] === "false" || vars[_key] === "undefined")
+    ) {
+      isDefined = false;
+    }
+
+    if (isDefined) {
       IF_DEFS.push(key);
     }
   }
