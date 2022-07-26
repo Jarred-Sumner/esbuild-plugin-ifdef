@@ -69,6 +69,7 @@ async function onLoadPlugin(args) {
 
     let count = 0;
     let line = "",
+      lineTrimmed = "",
       expression = "";
     let step = MODE.find_opening;
     let shouldRemove = false;
@@ -76,10 +77,11 @@ async function onLoadPlugin(args) {
 
     for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
       line = lines[lineNumber];
+      lineTrimmed = line.trim();
 
-      if (line.startsWith(IFDEF)) {
+      if (lineTrimmed.startsWith(IFDEF)) {
         lineType = LINE_TYPE.ifdef;
-      } else if (line.startsWith(ENDIF)) {
+      } else if (lineTrimmed.startsWith(ENDIF)) {
         lineType = LINE_TYPE.closing;
       } else {
         lineType = LINE_TYPE.plain;
@@ -89,7 +91,7 @@ async function onLoadPlugin(args) {
         depth = 0;
         ifdefStart = lineNumber;
         step = MODE.find_closing;
-        expression = line.substring(IFDEF.length).trim();
+        expression = lineTrimmed.substring(IFDEF.length).trim();
         shouldRemove = !IF_DEFS.includes(expression);
         if (shouldRemove && expression.startsWith("!")) {
           shouldRemove = false;
